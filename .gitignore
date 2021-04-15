@@ -19,5 +19,20 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Intellij #
+.idea
+*.iml
+*.log
+
+# crash logs
 hs_err_pid*
+
+HELP.md
+
+target/
+blog-vue/dist
+blog-vue/node_modules
+
+!**/src/main/**/build/
+!**/src/test/**
+!**/src/main/**/target/
