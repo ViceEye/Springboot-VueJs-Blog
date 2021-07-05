@@ -1,42 +1,173 @@
 <template>
-  <div class="header-container">
+  <div class="header-container-full" :class="{'mobile-nav-bar': true}">
     <router-link to="/">
       <h2 class="site-title">Venja's Blog</h2>
     </router-link>
-    <div class="breadcrumb">
-     <el-breadcrumb class="breadcrumb-menu" separator="|">
-        <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/">归档</a></el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/">动态</a></el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/">关于</a></el-breadcrumb-item>
-      </el-breadcrumb>
+    <div :class="{'mobile-hide': true}">
+      <router-link to="/">
+        <span class="nav-item" @mouseover="select(1)" @mouseout="clear()" :class="{selected: index === 1, highlight: highlight === 1}">
+          <i class="el-icon-s-home"></i>首页
+        </span>
+      </router-link>
+      <router-link to="/">
+        <span class="nav-item" @mouseover="select(2)" @mouseout="clear()" :class="{selected: index === 2}">
+          <i class="el-icon-s-management"></i>归档
+        </span>
+      </router-link>
+      <router-link to="/">
+        <span class="nav-item" @mouseover="select(3)" @mouseout="clear()" :class="{selected: index === 3}">
+          <i class="el-icon-message-solid"></i>动态
+        </span>
+      </router-link>
+      <router-link to="/">
+        <span class="nav-item" @mouseover="select(4)" @mouseout="clear()" :class="{selected: index === 4}">
+          <i class="el-icon-info"></i>关于
+        </span>
+      </router-link>
     </div>
+    <el-dropdown class="nav-avatar">
+      <span class="el-dropdown-link">
+        <el-avatar :size="40" :src="user.avatar"></el-avatar>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <p v-show="!isLogon" class="nav-avatar-username"> {{user.username}} </p>
+        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-home">首页</el-dropdown-item>
+        <el-dropdown-item v-show="canEdit && isLogon"><el-link :href=this.editPath :underline="false" icon="el-icon-edit">编辑</el-link></el-dropdown-item>
+        <el-dropdown-item v-show="!canEdit && isLogon"><el-link href="/blog/add" :underline="false" icon="el-icon-edit">发表</el-link></el-dropdown-item>
+        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-management">归档</el-dropdown-item>
+        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-message-solid">动态</el-dropdown-item>
+        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-info">关于</el-dropdown-item>
+        <el-dropdown-item v-show="!isLogon"><el-link href="/login" :underline="false" icon="el-icon-user">登录</el-link></el-dropdown-item>
+        <el-dropdown-item v-show="isLogon"><el-link @click="logout" :underline="false" icon="el-icon-circle-close">退出</el-link></el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Nav"
+  name: "Nav",
+  data() {
+    return {
+      user: {
+        avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+        username: '请先登录'
+      },
+      isLogon: false,
+      canEdit: false,
+      editPath: '-1',
+      highlight: 0,
+      list: [1, 2, 3, 4, 5],
+      index: 0
+    }
+  },
+  created(){
+    switch (this.$route.path)
+    {
+      case "/newBlogs":
+        this.highlight = 1;
+        break;
+      case "/archives":
+        this.highlight = 2;
+        break;
+      case "/moments":
+        this.highlight = 3;
+        break;
+      case "/about":
+        this.highlight = 4;
+        break;
+    }
+
+    this.isLogon = false;
+    if (this.$store.getters.getUser) {
+      this.user.username = this.$store.getters.getUser.username;
+      this.user.avatar = this.$store.getters.getUser.avatar;
+
+      this.isLogon = true;
+    } else {
+      this.$store.commit("REMOVE_INFO");
+    }
+
+    const blogId = this.$route.params.blogId;
+    const _this = this;
+    if (blogId) {
+      this.$axios.get('/blog/' + blogId).then(
+          res => {
+            const blog = res.data.data;
+
+            _this.editPath = "/blog/" + blog.id + "/edit";
+            _this.canEdit = (blog.userId === (_this.$store.getters.getUser) ? _this.$store.getters.getUser.id : -1);
+          }
+      )
+    }
+  },
+  methods: {
+    select(i) {
+      this.index = i;
+    },
+    clear() {
+      this.index = 0;
+    },
+    logout() {
+      const _this = this;
+      _this.$axios.get("/logout", {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(
+          res => {
+            _this.$store.commit("REMOVE_INFO");
+            _this.$router.push("/login");
+          }
+      )
+    }
+  },
 }
 </script>
 
 <style scoped>
-a{
-  text-decoration: none;
+.header-container-full{
+  width: 50%;
+  padding: 0 25%;
+  display: inline-block;
+  background-color: #3d4450;
 }
 h2{
-  color: black;
-}
-.header-container{
-  height: 66px;
-  margin-inside: 50px;
+  color: white;
+  margin: 10px 50px 10px 0 !important;
 }
 .site-title{
+  margin: 0;
   float: left;
 }
-.breadcrumb{
+.nav-item{
+  color: white;
+  float: left;
+  margin: 0 2px;
+  padding: 16px !important;
+  font-size: 13px;
+}
+.nav-avatar{
+  margin: 3px;
   float: right;
-  height: 100%;
-  vertical-align: middle;
+}
+.nav-avatar-username{
+  color: #606266;
+  font-size: 14px;
+  margin: 0 auto;
+  padding: 0 20px;
+  line-height: 36px;
+  text-decoration: underline;
+  user-select: none;
+}
+.selected {
+  background-color: #262c35;
+}
+.highlight {
+  background-color: #d9534f;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
 }
 </style>

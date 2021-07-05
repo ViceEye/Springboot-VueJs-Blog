@@ -22,12 +22,12 @@
 # Intellij #
 .idea
 *.iml
-*.log
 
 # crash logs
 hs_err_pid*
 
 HELP.md
+application-default.yml
 
 target/
 blog-vue/dist

@@ -115,7 +115,7 @@ export default {
 <style>
 .register {
   margin: 0 auto;
-  background-color: #bcdef3;
+  background-color: #3d4450;
   height: 100vh;
   display: flex;
 }

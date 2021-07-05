@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Header></Header>
+    <Nav></Nav>
 
-    <div class="edit-content">
+    <div class="edit-content" :class="{'mobile-90': true, 'mobile-80': true}">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="top" hide-required-asterisk>
         <el-form-item label="主题" prop="title">
           <el-input v-model="ruleForm.title"></el-input>
@@ -18,13 +18,14 @@
           />
         </el-form-item>
         <el-form-item class="buttons">
-          <el-button type="primary" @click="submitForm('ruleForm')">立即发表</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button :loading="sending" type="primary" @click="submitForm('ruleForm')">立即发表</el-button>
+          <el-button :loading="sending" @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
 
     </div>
 
+    <Footer></Footer>
   </div>
 </template>
 
@@ -60,10 +61,12 @@
     Preview,
     Fullscreen,
   } from 'element-tiptap';
+  import Nav from "../components/Nav";
 
   export default {
     name: "BlogEdit",
     components: {
+      Nav,
       Header,
       Footer,
     },
@@ -115,11 +118,13 @@
           content: [
             { required: true, message: '请输入你想发表的文章内容', trigger: 'blur' }
           ]
-        }
+        },
+        sending: false,
       };
     },
     methods: {
       submitForm(formName) {
+        this.sending = true;
         this.$refs[formName].validate((valid) => {
           if (valid) {
 
@@ -132,7 +137,6 @@
               }
             }).then(
                 res => {
-                  console.log(res);
                   _this.$alert('发表成功', '来自Venja\'s Blog的提示' , {
                     confirmButtonText: '确定',
                     callback: action => {
@@ -155,6 +159,7 @@
     created() {
       const blogId = this.$route.params.blogId;
       const _this = this;
+      _this.sending = false;
       if (blogId) {
         this.$axios.get('/blog/' + blogId).then(
             res => {
@@ -172,7 +177,7 @@
 
 <style scoped>
 .edit-content{
-  max-width: 60%;
+  width: 60%;
   margin: 40px auto;
   text-align: left;
   font-family: "Avenir", Helvetica, Arial, sans-serif;

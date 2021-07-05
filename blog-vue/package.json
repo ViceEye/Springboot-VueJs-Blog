@@ -12,6 +12,7 @@
     "element-tiptap": "^1.26.2",
     "element-ui": "^2.15.1",
     "vue": "^2.6.11",
+    "vue-core-video-player": "^0.2.0",
     "vue-router": "^3.2.0",
     "vue-video-player": "^5.0.2",
     "vuex": "^3.4.0"

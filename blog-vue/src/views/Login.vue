@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="login">
     <el-form class="form" status-icon :rules="rules" :model="loginForm"  label-width="80px" ref="loginForm" label-position="top">
 
@@ -28,8 +28,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'Joka.Venja',
-        password: '111111',
+        username: '',
+        password: '',
       },
       rules: {
         username: [
@@ -73,7 +73,7 @@ export default {
 
 <style>
 .login {
-  background-color: #bcdef3;
+  background-color: #3d4450;
   height: 100vh;
   display: flex;
   align-items: center;

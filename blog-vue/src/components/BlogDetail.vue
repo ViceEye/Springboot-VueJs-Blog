@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Nav></Nav>
 
     <el-container v-loading="loading"
                   element-loading-text="拼命加载中"
@@ -15,16 +15,18 @@
       </el-main>
     </el-container>
 
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
 import Header from "./Header";
 import Footer from "./Footer";
+import Nav from "./Nav";
 
 export default {
   name: "BlogDetail",
-  components: {Header, Footer},
+  components: {Nav, Header, Footer},
   data() {
     return {
       blog: {

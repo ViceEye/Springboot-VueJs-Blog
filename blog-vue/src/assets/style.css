@@ -13,8 +13,42 @@ html,body{
     align-items: center;
     justify-content: center;
 }
-a[href="https://froala.com/wysiwyg-editor"], a[href="https://www.froala.com/wysiwyg-editor?k=u"] {
-    position: absolute;
-    top: -99999999px;
-    opacity: 0;
+.blue{
+    color: #3a8ee6;
+}
+.yellow{
+    color: #ffc83d;
+}
+
+.mobile-show{
+    display: none;
+}
+
+@media screen and (max-width: 1092px) {
+    .mobile-nav-bar {
+        width: 96% !important;
+        padding: 0 2% !important;
+    }
+    .mobile-80 {
+        width: 80% !important;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .mobile-full {
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+    .mobile-90 {
+        width: 90% !important;
+    }
+}
+
+@media screen and (max-width: 577px) {
+    .mobile-hide {
+        display: none !important;
+    }
+    .mobile-show {
+        display: block !important;
+    }
 }
