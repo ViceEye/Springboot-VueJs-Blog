@@ -27,12 +27,10 @@
 hs_err_pid*
 
 HELP.md
-application-default.yml
 
 target/
-blog-vue/dist
-blog-vue/node_modules
+blog-vue/dist/
+blog-vue/node_modules/
 
-!**/src/main/**/build/
-!**/src/test/**
-!**/src/main/**/target/
+src/main/resources/
+src/test/
