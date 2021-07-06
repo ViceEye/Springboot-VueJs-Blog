@@ -1,0 +1,21 @@
+# Example Config
+# Modify datasource and shiro-redis according your environment
+# DataSource Config
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://{localhost}/{tableName}?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    username: username
+    password: password
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: 127.0.0.1:6379
+vueblog:
+  jwt:
+    secret: f4e2e85209631f86b67cde581c0f9eb5
+    header: Authorization
+server:
+  port: 8081
