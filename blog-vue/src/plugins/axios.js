@@ -1,7 +1,7 @@
 import axios from 'axios'
 import ElementUI from "element-ui";
 import router from '../router/router'
-import store from '../store'
+import store from '../store/store'
 
 //axios.defaults.baseURL = "http://venja.top:8081";
 axios.defaults.baseURL = "http://localhost:8081";

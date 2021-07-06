@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import top.venja.common.lang.Result;
 import top.venja.entity.User;
 import top.venja.service.UserService;
 
@@ -29,7 +27,7 @@ public class JwtUtils {
     @Autowired
     UserService userService;
 
-    private String secret = "985169151";
+    private String secret;
     private String header;
 
     /**

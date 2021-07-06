@@ -25,20 +25,20 @@
         </span>
       </router-link>
     </div>
-    <el-dropdown class="nav-avatar">
+    <el-dropdown class="nav-avatar" @command="goto">
       <span class="el-dropdown-link">
         <el-avatar :size="40" :src="user.avatar"></el-avatar>
       </span>
       <el-dropdown-menu slot="dropdown">
         <p class="nav-avatar-username"> {{user.username}} </p>
-        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-home">首页</el-dropdown-item>
-        <el-dropdown-item v-show="canEdit && isLogon"><el-link :href=this.editPath :underline="false" icon="el-icon-edit">编辑</el-link></el-dropdown-item>
-        <el-dropdown-item v-show="!canEdit && isLogon"><el-link href="/blog/add" :underline="false" icon="el-icon-edit">发表</el-link></el-dropdown-item>
+        <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-home" command="/">首页</el-dropdown-item>
+        <el-dropdown-item v-show="canEdit && isLogon" icon="el-icon-edit" :command=this.editPath>编辑</el-dropdown-item>
+        <el-dropdown-item v-show="!canEdit && isLogon && notEdit" icon="el-icon-edit" command="/blog/add">发表</el-dropdown-item>
         <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-management">归档</el-dropdown-item>
         <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-message-solid">动态</el-dropdown-item>
         <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-info">关于</el-dropdown-item>
-        <el-dropdown-item v-show="!isLogon"><el-link href="/login" :underline="false" icon="el-icon-user">登录</el-link></el-dropdown-item>
-        <el-dropdown-item v-show="isLogon"><el-link @click="logout" :underline="false" icon="el-icon-circle-close">退出</el-link></el-dropdown-item>
+        <el-dropdown-item v-show="!isLogon" icon="el-icon-user" command="/login">登录</el-dropdown-item>
+        <el-dropdown-item v-show="isLogon" icon="el-icon-circle-close" command="logout">退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 
@@ -56,6 +56,7 @@ export default {
       },
       isLogon: false,
       canEdit: false,
+      notEdit: this.$route.path !== '/blog/add',
       editPath: '-1',
       highlight: 0,
       list: [1, 2, 3, 4, 5],
@@ -121,6 +122,13 @@ export default {
     }
   },
   methods: {
+    goto(href) {
+      if (href !== "logout") {
+        this.$router.push(href);
+      } else {
+        this.logout();
+      }
+    },
     select(i) {
       this.index = i;
     },
@@ -184,6 +192,10 @@ h2{
 }
 .highlight {
   background-color: #d9534f;
+}
+.el-link {
+  width: 100%;
+  height: 100%;
 }
 .el-dropdown-link {
   cursor: pointer;

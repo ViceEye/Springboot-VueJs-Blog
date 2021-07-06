@@ -1,4 +1,5 @@
 import router from "../router/router";
+import store from "../store/store";
 import { Message } from 'element-ui';
 
 
@@ -7,7 +8,7 @@ router.beforeEach(
 
         if (to.matched.some(record => record.meta.requireAuth)) {
 
-            const token = this.$store.getters.getToken;
+            const token = store.getters.getToken;
 
             if (token) {
                 if (to.path === '/login') {

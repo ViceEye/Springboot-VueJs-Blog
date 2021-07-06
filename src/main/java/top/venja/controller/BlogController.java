@@ -21,6 +21,7 @@ import top.venja.util.ShiroUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * <p>
@@ -51,7 +52,11 @@ public class BlogController {
 
         if (SecurityUtils.getSubject().isAuthenticated()) {
             Page<Blog> page = new Page<>(currentPage, 7);
-            pageData = blogService.page(page, new QueryWrapper<Blog>().orderByDesc("created"));
+            if (Objects.requireNonNull(claims).getSubject().equals("1")) {
+                pageData = blogService.page(page, new QueryWrapper<Blog>().orderByDesc("created"));
+            } else {
+                pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).or().eq("userId", Long.parseLong(claims.getSubject())));
+            }
         } else {
             Page<Blog> page = new Page<>(currentPage, 7);
             pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).orderByDesc("created"));
@@ -76,10 +81,9 @@ public class BlogController {
             BeanUtil.copyProperties(blog, falseBlog, "title", "description", "content");
 
             if (claims == null || jwtUtils.isTokenNotValid(claims)) {
-                SecurityUtils.getSubject().logout();
                 return Result.success(falseBlog);
             } else {
-                if (!claims.getSubject().equals("1")) {
+                if (!claims.getSubject().equals("1") || Long.parseLong(claims.getSubject()) != blog.getUserId()) {
                     return Result.success(falseBlog);
                 }
             }

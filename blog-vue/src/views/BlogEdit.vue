@@ -131,7 +131,7 @@
             //this.ruleForm.content = this.ruleForm.content.replace("<p data-f-id=\"pbf\" style=\"text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; font-family: sans-serif;\">Powered by <a href=\"https://www.froala.com/wysiwyg-editor?pb=1\" title=\"Froala Editor\">Froala Editor</a></p>", "");
             _this.$axios.post('/blog/edit', this.ruleForm, {
               headers: {
-                "Authorization": this.$store.getters.getToken
+                "Authorization": _this.$store.getters.getToken
               }
             }).then(
                 res => {
@@ -152,6 +152,35 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      getBlog(blogId, token) {
+        const _this = this;
+        if (token === "") {
+          _this.$axios.get('/blog/' + blogId).then(
+              res => {
+                _this.loadRes(res)
+              }
+          )
+        } else {
+          _this.$axios.get('/blog/' + blogId, {
+            headers: {
+              "Authorization": token
+            }
+          }).then(
+              res => {
+                _this.loadRes(res)
+              }
+          )
+        }
+      },
+      loadRes(res) {
+        const _this = this;
+        const blog = res.data.data;
+
+        _this.ruleForm.id = blog.id;
+        _this.ruleForm.title = blog.title;
+        _this.ruleForm.description = blog.description;
+        _this.ruleForm.content = blog.content;
       }
     },
     created() {
@@ -159,15 +188,12 @@
       const _this = this;
       _this.sending = false;
       if (blogId) {
-        this.$axios.get('/blog/' + blogId).then(
-            res => {
-              const blog = res.data.data;
-              _this.ruleForm.id = blog.id;
-              _this.ruleForm.title = blog.title;
-              _this.ruleForm.description = blog.description;
-              _this.ruleForm.content = blog.content;
-            }
-        )
+        const _this = this;
+        if (this.$store.getters.getToken) {
+          _this.getBlog(blogId, this.$store.getters.getToken);
+        } else {
+          _this.getBlog(blogId, "");
+        }
       }
     }
   }

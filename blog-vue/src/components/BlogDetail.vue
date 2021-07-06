@@ -37,24 +37,47 @@ export default {
       loading: true
     }
   },
+  methods: {
+    getBlog(blogId, token) {
+      const _this = this;
+      if (token === "") {
+        _this.$axios.get('/blog/' + blogId).then(
+            res => {
+              _this.loadRes(res)
+            }
+        )
+      } else {
+        _this.$axios.get('/blog/' + blogId, {
+          headers: {
+            "Authorization": token
+          }
+        }).then(
+            res => {
+              _this.loadRes(res)
+            }
+        )
+      }
+    },
+    loadRes(res) {
+      const _this = this;
+      const blog = res.data.data;
+
+      _this.blog.id = blog.id;
+      _this.blog.title = blog.title;
+
+      _this.blog.content = blog.content;
+      _this.loading = false;
+    }
+  },
   created() {
     const blogId = this.$route.params.blogId;
-    const _this = this;
     if (blogId) {
-      this.$axios.get('/blog/' + blogId).then(
-          res => {
-            const blog = res.data.data;
-
-            _this.blog.id = blog.id;
-            _this.blog.title = blog.title;
-
-            //let MarkdownIt = require("markdown-it");
-            //let md = new MarkdownIt();
-
-            _this.blog.content = blog.content;
-            _this.loading = false;
-          }
-      )
+      const _this = this;
+      if (this.$store.getters.getToken) {
+        _this.getBlog(blogId, this.$store.getters.getToken);
+      } else {
+        _this.getBlog(blogId, "");
+      }
     }
   }
 }

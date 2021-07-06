@@ -64,11 +64,7 @@ export default {
       if (token === "") {
         _this.$axios.get("/blogs?currentPage=" + currentPage).then(
             res => {
-              _this.blogs = res.data.data.records;
-              _this.currentPage = res.data.data.current;
-              _this.totalPage = res.data.data.total;
-              _this.pageSize = res.data.data.size;
-              _this.loading = false;
+              this.loadRes(res);
             }
         )
       } else {
@@ -79,17 +75,21 @@ export default {
         }).then(
             res => {
               if (res.data.data != null) {
-                _this.blogs = res.data.data.records;
-                _this.currentPage = res.data.data.current;
-                _this.totalPage = res.data.data.total;
-                _this.pageSize = res.data.data.size;
-                _this.loading = false;
+                this.loadRes(res);
               } else {
-                _this.getRecords(currentPage, "")
+                _this.getRecords(currentPage, "");
               }
             }
         )
       }
+    },
+    loadRes(res) {
+      const _this = this;
+      _this.blogs = res.data.data.records;
+      _this.currentPage = res.data.data.current;
+      _this.totalPage = res.data.data.total;
+      _this.pageSize = res.data.data.size;
+      _this.loading = false;
     }
   },
   created() {
