@@ -30,7 +30,7 @@
         <el-avatar :size="40" :src="user.avatar"></el-avatar>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <p v-show="!isLogon" class="nav-avatar-username"> {{user.username}} </p>
+        <p class="nav-avatar-username"> {{user.username}} </p>
         <el-dropdown-item :class="{'mobile-show': true}" icon="el-icon-s-home">首页</el-dropdown-item>
         <el-dropdown-item v-show="canEdit && isLogon"><el-link :href=this.editPath :underline="false" icon="el-icon-edit">编辑</el-link></el-dropdown-item>
         <el-dropdown-item v-show="!canEdit && isLogon"><el-link href="/blog/add" :underline="false" icon="el-icon-edit">发表</el-link></el-dropdown-item>
@@ -41,6 +41,7 @@
         <el-dropdown-item v-show="isLogon"><el-link @click="logout" :underline="false" icon="el-icon-circle-close">退出</el-link></el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+
   </div>
 </template>
 
@@ -61,10 +62,13 @@ export default {
       index: 0
     }
   },
-  created(){
+  created() {
+    this.user.username = '请先登录';
+    this.user.avatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+
     switch (this.$route.path)
     {
-      case "/newBlogs":
+      case "/":
         this.highlight = 1;
         break;
       case "/archives":
@@ -79,13 +83,28 @@ export default {
     }
 
     this.isLogon = false;
-    if (this.$store.getters.getUser) {
-      this.user.username = this.$store.getters.getUser.username;
-      this.user.avatar = this.$store.getters.getUser.avatar;
-
-      this.isLogon = true;
+    if (this.$store.getters.getToken) {
+      this.$axios.post("/remember", {
+        token: this.$store.getters.getToken
+      }).then(
+          res => {
+            if (res.data.data === "Failed") {
+              this.$store.commit("REMOVE_INFO");
+            } else {
+              this.isLogon = true;
+              const userInfo = res.data.data;
+              this.$store.commit("SET_USERINFO", userInfo);
+            }
+          }
+      )
     } else {
       this.$store.commit("REMOVE_INFO");
+    }
+
+    const sessionUserInfo = this.$store.getters.getUser;
+    if (sessionUserInfo.username != null && sessionUserInfo.avatar != null) {
+      this.user.username = sessionUserInfo.username;
+      this.user.avatar = sessionUserInfo.avatar;
     }
 
     const blogId = this.$route.params.blogId;
@@ -112,7 +131,7 @@ export default {
       const _this = this;
       _this.$axios.get("/logout", {
         headers: {
-          "Authorization": localStorage.getItem("token")
+          "Authorization": this.$store.getters.getToken
         }
       }).then(
           res => {

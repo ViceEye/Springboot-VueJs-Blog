@@ -3,8 +3,8 @@ import ElementUI from "element-ui";
 import router from '../router/router'
 import store from '../store'
 
-axios.defaults.baseURL = "http://venja.top:8081";
-//axios.defaults.baseURL = "http://localhost:8081";
+//axios.defaults.baseURL = "http://venja.top:8081";
+axios.defaults.baseURL = "http://localhost:8081";
 
 //  前置拦截
 axios.interceptors.request.use(
@@ -19,14 +19,16 @@ axios.interceptors.response.use(
         let res = response.data;
         if (res.code === 200) {
             return response;
-        } else {
+        } else
+        if (res.code === 210) {
 
-            ElementUI.Message.error("密码错误", {
+            ElementUI.Message.error("Token过期, 重新登陆", {
                 duration: 3 * 1000
             });
 
-            return Promise.reject(response.data.msg)
+            return response;
         }
+        return response;
     },
     error => {
         if (error.response.data) {

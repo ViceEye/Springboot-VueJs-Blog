@@ -39,6 +39,11 @@ html,body{
         width: 100% !important;
         margin: 0 auto !important;
     }
+    .mobile-100 {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 40px auto !important;
+    }
     .mobile-90 {
         width: 90% !important;
     }

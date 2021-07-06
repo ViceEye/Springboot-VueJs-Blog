@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import Header from "../components/Header";
+  import Nav from "../components/Nav";
   import Footer from "../components/Footer";
 
   import {
@@ -61,13 +61,11 @@
     Preview,
     Fullscreen,
   } from 'element-tiptap';
-  import Nav from "../components/Nav";
 
   export default {
     name: "BlogEdit",
     components: {
       Nav,
-      Header,
       Footer,
     },
     data() {
@@ -133,7 +131,7 @@
             //this.ruleForm.content = this.ruleForm.content.replace("<p data-f-id=\"pbf\" style=\"text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; font-family: sans-serif;\">Powered by <a href=\"https://www.froala.com/wysiwyg-editor?pb=1\" title=\"Froala Editor\">Froala Editor</a></p>", "");
             _this.$axios.post('/blog/edit', this.ruleForm, {
               headers: {
-                "Authorization": localStorage.getItem("token")
+                "Authorization": this.$store.getters.getToken
               }
             }).then(
                 res => {

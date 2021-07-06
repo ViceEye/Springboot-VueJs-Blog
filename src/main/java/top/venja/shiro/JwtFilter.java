@@ -45,8 +45,10 @@ public class JwtFilter extends AuthenticatingFilter {
         } else {
             // 校验Jwt
             Claims claims = jwtUtils.getClaimByToken(jwt);
-            if (claims == null || jwtUtils.isTokenExpired(claims.getExpiration())) {
-                throw new ExpiredCredentialsException("token已失效, 请重新登录.");
+
+            if (claims == null || jwtUtils.isTokenNotValid(claims)) {
+                Result.success(210,  "过期Token重新登陆", "Failed");
+                return false;
             }
 
             // 执行登录

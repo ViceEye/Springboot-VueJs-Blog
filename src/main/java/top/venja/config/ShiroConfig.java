@@ -30,6 +30,21 @@ public class ShiroConfig {
     @Autowired
     JwtFilter jwtFilter;
 
+    @Bean("shiroFilterFactoryBean")
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
+                                                         ShiroFilterChainDefinition shiroFilterChainDefinition) {
+        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
+        shiroFilter.setSecurityManager(securityManager);
+
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("jwt", jwtFilter);
+        shiroFilter.setFilters(filters);
+
+        Map<String, String> filterMap = shiroFilterChainDefinition.getFilterChainMap();
+        shiroFilter.setFilterChainDefinitionMap(filterMap);
+        return shiroFilter;
+    }
+
     @Bean
     public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
                                                      SessionManager sessionManager,
@@ -51,20 +66,6 @@ public class ShiroConfig {
         filterMap.put("/**", "jwt");        // 通过注解方式校验
         chainDefinition.addPathDefinitions(filterMap);
         return chainDefinition;
-    }
-
-    @Bean("shiroFilterFactoryBean")
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, ShiroFilterChainDefinition shiroFilterChainDefinition) {
-        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
-        shiroFilter.setSecurityManager(securityManager);
-
-        Map<String, Filter> filters = new HashMap<>();
-        filters.put("jwt", jwtFilter);
-        shiroFilter.setFilters(filters);
-
-        Map<String, String> filterMap = shiroFilterChainDefinition.getFilterChainMap();
-        shiroFilter.setFilterChainDefinitionMap(filterMap);
-        return shiroFilter;
     }
 
     // shiro-redis

@@ -5,7 +5,6 @@ import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -16,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import top.venja.common.dto.LoginDto;
 import top.venja.common.dto.RegisterDto;
+import top.venja.common.dto.RememberDto;
 import top.venja.common.lang.Result;
+import top.venja.common.utils.CommonUtil;
 import top.venja.entity.User;
 import top.venja.service.UserService;
 import top.venja.shiro.JwtToken;
@@ -51,7 +52,13 @@ public class AccountController {
         if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))) {
             return Result.fail("账号或密码错误");
         }
-        String jwt = jwtUtils.generateToken(user.getId());
+
+        String passToken = CommonUtil.generateShortUUID();
+        String jwt = jwtUtils.generateToken(user.getId(), passToken);
+
+        user.setPassToken(passToken);
+        userService.saveOrUpdate(user);
+
         JwtToken token = new JwtToken(jwt);
         SecurityUtils.getSubject().login(token);
 
@@ -68,14 +75,22 @@ public class AccountController {
     }
 
     @PostMapping("/remember")
-    public Result rememberMe(HttpServletRequest request) {
-        String jwt = request.getHeader("Authorization");
+    public Result rememberMe(@Validated @RequestBody RememberDto rememberDto) {
+        String jwt = rememberDto.getToken();
         Claims claims = jwtUtils.getClaimByToken(jwt);
-        if (claims == null || jwtUtils.isTokenExpired(claims.getExpiration())) {
-            SecurityUtils.getSubject().logout();
+        if (claims == null || jwtUtils.isTokenNotValid(claims)) {
+            return Result.success(210,  "过期Token重新登陆", "Failed");
         }
 
-        return Result.success("");
+        User user = userService.getOne(new QueryWrapper<User>().eq("id",claims.getSubject()));
+
+        return Result.success(200, "Validated",
+                MapUtil.builder()
+                .put("id", user.getId())
+                .put("username", user.getUsername())
+                .put("avatar", user.getAvatar())
+                .put("email", user.getEmail())
+                .map());
     }
 
     @RequiresAuthentication
@@ -95,10 +110,13 @@ public class AccountController {
             return Result.fail("确认密码与密码不一致");
         }
 
+        String passToken = CommonUtil.generateShortUUID();
+
         user = new User();
         user.setUsername(registerDto.getUsername());
         user.setAvatar("https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png");
         user.setPassword(SecureUtil.md5(registerDto.getPassword()));
+        user.setPassToken(passToken);
         user.setCreated(LocalDateTime.now());
         user.setStatus(0);
 
@@ -107,7 +125,7 @@ public class AccountController {
         user = userService.getOne(new QueryWrapper<User>().eq("username", registerDto.getUsername()));
         Assert.notNull(user, "账号注册失败");
 
-        String jwt = jwtUtils.generateToken(user.getId());
+        String jwt = jwtUtils.generateToken(user.getId(), passToken);
 
         response.setHeader("Authorization", jwt);
         response.setHeader("Access-control-expose-Headers", "Authorization");

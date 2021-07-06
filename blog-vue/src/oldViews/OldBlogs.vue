@@ -41,7 +41,7 @@
 
 <script>
   import Nav from "../components/Nav";
-  import Header from "../components/Header";
+  import Header from "./Header";
   import Footer from "../components/Footer";
   export default {
     name: "Blogs.vue",
@@ -64,7 +64,7 @@
         const _this = this;
         _this.$axios.get("/blogs?currentPage=" + currentPage, {
           headers: {
-            "Authorization": localStorage.getItem("token")
+            "Authorization": this.$store.getters.getToken
           }
         }).then(
             res => {

@@ -5,7 +5,8 @@
     <el-container v-loading="loading"
                   element-loading-text="拼命加载中"
                   element-loading-spinner="el-icon-loading"
-                  class="blog">
+                  class="blog"
+                  :class="{'mobile-80': true, 'mobile-100': true}">
       <el-main>
         <h2 class="blog-title"> {{ blog.title }} </h2>
 
@@ -20,13 +21,12 @@
 </template>
 
 <script>
-import Header from "./Header";
 import Footer from "./Footer";
 import Nav from "./Nav";
 
 export default {
   name: "BlogDetail",
-  components: {Nav, Header, Footer},
+  components: {Nav, Footer},
   data() {
     return {
       blog: {

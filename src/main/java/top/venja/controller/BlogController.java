@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -20,9 +19,7 @@ import top.venja.service.BlogService;
 import top.venja.util.JwtUtils;
 import top.venja.util.ShiroUtil;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
 /**
@@ -48,11 +45,9 @@ public class BlogController {
 
         String jwt = request.getHeader("Authorization");
         Claims claims = jwtUtils.getClaimByToken(jwt);
-        if (claims == null || jwtUtils.isTokenExpired(claims.getExpiration())) {
+        if (claims == null || jwtUtils.isTokenNotValid(claims)) {
             SecurityUtils.getSubject().logout();
-            System.out.println("logout");
         }
-        System.out.println(jwt);
 
         if (SecurityUtils.getSubject().isAuthenticated()) {
             Page<Blog> page = new Page<>(currentPage, 7);
@@ -66,9 +61,29 @@ public class BlogController {
     }
 
     @GetMapping("/blog/{id}")
-    public Result detail(@PathVariable(name = "id") Long id) {
+    public Result detail(@PathVariable(name = "id") Long id, HttpServletRequest request) {
         Blog blog = blogService.getById(id);
         Assert.notNull(blog, "该博客不存在或已被删除");
+
+        if (blog.getType() == 1) {
+            String jwt = request.getHeader("Authorization");
+            Claims claims = jwtUtils.getClaimByToken(jwt);
+            Blog falseBlog = new Blog();
+            falseBlog.setTitle("你没有权限浏览该文章");
+            falseBlog.setDescription("你没有权限浏览该文章");
+            falseBlog.setContent("你没有权限浏览该文章");
+
+            BeanUtil.copyProperties(blog, falseBlog, "title", "description", "content");
+
+            if (claims == null || jwtUtils.isTokenNotValid(claims)) {
+                SecurityUtils.getSubject().logout();
+                return Result.success(falseBlog);
+            } else {
+                if (!claims.getSubject().equals("1")) {
+                    return Result.success(falseBlog);
+                }
+            }
+        }
 
         return Result.success(blog);
     }

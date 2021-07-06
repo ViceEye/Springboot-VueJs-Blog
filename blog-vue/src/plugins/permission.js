@@ -7,7 +7,7 @@ router.beforeEach(
 
         if (to.matched.some(record => record.meta.requireAuth)) {
 
-            const token = localStorage.getItem("token");
+            const token = this.$store.getters.getToken;
 
             if (token) {
                 if (to.path === '/login') {
