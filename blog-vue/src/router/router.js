@@ -5,6 +5,8 @@ import BlogEdit from "../views/BlogEdit";
 import Blogs from "../views/Blogs";
 import Login from "../views/Login";
 import Register from "../views/Register";
+import Ledger from "../newViews/Ledger";
+import LedgerEdit from "../newViews/LedgerEdit";
 
 Vue.use(VueRouter);
 
@@ -53,6 +55,21 @@ const routes = [
     meta: {
       validationCheck: true,
     }
+  },
+  {
+    path: '/ledger',
+    name: 'Ledger',
+    component: Ledger
+  },
+  {
+    path: '/ledger/:ledgerId/edit',
+    name: "LedgerEdit",
+    component: LedgerEdit,
+  },
+  {
+    path: '/ledger/add',
+    name: "LedgerAdd",
+    component: LedgerEdit,
   },
 ]
 

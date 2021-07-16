@@ -1,5 +1,3 @@
-# Example Config
-# Modify datasource and shiro-redis according your environment
 # DataSource Config
 spring:
   datasource:

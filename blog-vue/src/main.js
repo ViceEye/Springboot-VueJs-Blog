@@ -32,6 +32,8 @@ import "./plugins/axios"
 Vue.use(ElementUI);
 Vue.use(heart);
 
+Vue.prototype.$EventBus = new Vue()
+
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios
 

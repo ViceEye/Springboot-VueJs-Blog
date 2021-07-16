@@ -1,5 +1,10 @@
 package top.venja.common.utils;
 
+import io.jsonwebtoken.Claims;
+import top.venja.common.lang.Result;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CommonUtil {
@@ -21,4 +26,33 @@ public class CommonUtil {
         }
         return shortBuffer.toString();
     }
+
+    /**
+     * Ledger Type Int Enum
+     */
+    public enum LedgerType {
+
+        COMMON(1),
+        IN(2),
+        OUT(3);
+
+        private final int type;
+
+        LedgerType(int type) {
+            this.type = type;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public static List<Integer> getAllValues() {
+            List<Integer> type = new ArrayList<>();
+            for (LedgerType ledgerType : values()) {
+                type.add(ledgerType.getType());
+            }
+            return type;
+        }
+    }
+
 }

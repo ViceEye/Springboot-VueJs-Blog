@@ -6,7 +6,7 @@
         <h2> {{ blog.title }} </h2>
         <div>
           <i class="el-icon-date box-card-info blue"> {{ blog.created }} </i>
-          <i class="el-icon-thumb box-card-info yellow">≈666</i>
+          <i class="el-icon-view box-card-info yellow">≈666</i>
         </div>
         <!--
         <el-image

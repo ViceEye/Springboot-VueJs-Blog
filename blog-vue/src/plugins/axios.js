@@ -26,6 +26,8 @@ axios.interceptors.response.use(
                 duration: 3 * 1000
             });
 
+            location.reload();
+
             return response;
         }
         return response;

@@ -3,15 +3,13 @@ package top.venja.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -19,35 +17,23 @@ import javax.validation.constraints.NotEmpty;
  * </p>
  *
  * @author Joka.Venja
- * @since 2021-03-29
+ * @since 2021-07-13
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("m_blog")
-public class Blog implements Serializable {
+@TableName("m_ledger_label")
+public class LedgerLabel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
-    private Long userId;
+    @NotEmpty(message = "标签不能为空")
+    private String label;
 
-    @NotEmpty(message = "标题不能为空")
-    private String title;
-
-    @NotEmpty(message = "摘要不能为空")
-    private String description;
-
-    @NotEmpty(message = "内容不能为空")
-    private String content;
-
-    @JsonFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
-    private LocalDateTime created;
-
-    private Integer status;
-
+    @NotNull(message = "标签类型不能为空")
     private Integer type;
 
 

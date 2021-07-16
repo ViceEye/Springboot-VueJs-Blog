@@ -156,7 +156,7 @@ export default {
 .header-container-full{
   width: 50%;
   padding: 0 25%;
-  display: inline-block;
+  display: flex;
   background-color: #3d4450;
 }
 h2{
@@ -175,8 +175,7 @@ h2{
   font-size: 13px;
 }
 .nav-avatar{
-  margin: 3px;
-  float: right;
+  margin: 3px 0 3px auto;
 }
 .nav-avatar-username{
   color: #606266;

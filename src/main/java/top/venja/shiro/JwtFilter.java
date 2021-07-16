@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ public class JwtFilter extends AuthenticatingFilter {
             Claims claims = jwtUtils.getClaimByToken(jwt);
 
             if (claims == null || jwtUtils.isTokenNotValid(claims)) {
-                Result.success(210,  "过期Token重新登陆", "Failed");
+                Result.fail(Result.CODE.LOGIN_TOKEN_FAIL,  "过期Token重新登陆", "Failed");
                 return false;
             }
 

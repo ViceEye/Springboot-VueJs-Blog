@@ -1,26 +1,116 @@
-html,body{
+/* General */
+html, body {
     margin: 0;
     padding: 0;
 }
-.mr-auto{
+.mr-auto  {
     margin-right: auto!important;
 }
-.ml-auto{
+.ml-auto {
     margin-left: auto!important;
 }
-.flex-center{
+.flex-center {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.blue{
-    color: #3a8ee6;
+.no-select {
+    user-select:none;
 }
-.yellow{
-    color: #ffc83d;
+/* General */
+
+/* LedgerIcon */
+.out-button {
+    border: #DCDFE6 solid thin;
+    background-color: #f56c6c;
+}
+.out-button:hover {
+    color: #606266;
+    background-color: #f78989;
+}
+.out-button:focus {
+    color: #606266;
+    background-color: #f78989;
+}
+.out-button:visited {
+    color: #606266;
+    background-color: #f78989;
+}
+.out-button:active {
+    background-color: white;
+    color: #f56c6c;
+    border: #f56c6c solid thin;
 }
 
-.mobile-show{
+
+.in-button {
+    border: #DCDFE6 solid thin;
+    background-color: #f56c6c;
+}
+.in-button:hover {
+    color: #606266;
+    background-color: #f78989;
+}
+.in-button:focus {
+    color: #606266;
+    background-color: #f78989;
+}
+.in-button:visited {
+    color: #606266;
+    background-color: #f78989;
+}
+.in-button:active {
+    background-color: white;
+    color: #f56c6c;
+    border: #f56c6c solid thin;
+}
+/* LedgerIcon */
+
+
+/* Font */
+.t1 {
+    font-size: 32px;
+}
+.t2 {
+    font-size: 24px;
+}
+.t3 {
+    font-size: 18px;
+}
+.t4 {
+    font-size: 16px;
+}
+.t5 {
+    font-size: 13px;
+}
+/* Font */
+
+
+/* Colors */
+.bold {
+    font-weight: bold;
+}
+.blue {
+    color: #3a8ee6;
+}
+.yellow {
+    color: #ffc83d;
+}
+.grey {
+    color: #8c939d;
+}
+.black {
+    color: black;
+}
+.white {
+    color: white !important;
+}
+/* Colors */
+
+
+
+/* Auto Resize */
+.mobile-show {
     display: none;
 }
 
@@ -57,3 +147,4 @@ html,body{
         display: block !important;
     }
 }
+/* Auto Resize */

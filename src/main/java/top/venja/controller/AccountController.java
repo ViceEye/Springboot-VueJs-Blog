@@ -9,13 +9,9 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.venja.common.dto.LoginDto;
 import top.venja.common.dto.RegisterDto;
-import top.venja.common.dto.RememberDto;
 import top.venja.common.lang.Result;
 import top.venja.common.utils.CommonUtil;
 import top.venja.entity.User;
@@ -23,7 +19,6 @@ import top.venja.service.UserService;
 import top.venja.shiro.JwtToken;
 import top.venja.util.JwtUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
@@ -75,16 +70,15 @@ public class AccountController {
     }
 
     @PostMapping("/remember")
-    public Result rememberMe(@Validated @RequestBody RememberDto rememberDto) {
-        String jwt = rememberDto.getToken();
-        Claims claims = jwtUtils.getClaimByToken(jwt);
+    public Result rememberMe(@Validated @RequestHeader String authorization) {
+        Claims claims = jwtUtils.getClaimByToken(authorization);
         if (claims == null || jwtUtils.isTokenNotValid(claims)) {
-            return Result.success(210,  "过期Token重新登陆", "Failed");
+            return Result.fail(Result.CODE.LOGIN_TOKEN_FAIL,  "过期Token重新登陆", "Failed");
         }
 
         User user = userService.getOne(new QueryWrapper<User>().eq("id",claims.getSubject()));
 
-        return Result.success(200, "Validated",
+        return Result.success(Result.CODE.GLOBAL_SUCCESS, "Validated",
                 MapUtil.builder()
                 .put("id", user.getId())
                 .put("username", user.getUsername())
