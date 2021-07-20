@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("token"),
-    userInfo: JSON.parse(localStorage.getItem("userInfo"))
+    userInfo: localStorage.getItem("userInfo") === "undefined" ? "" : JSON.parse(localStorage.getItem("userInfo"))
   },
   // setter
   mutations: {

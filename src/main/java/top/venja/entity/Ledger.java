@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -31,14 +34,19 @@ public class Ledger implements Serializable {
 
     private Long userId;
 
-    @NotEmpty(message = "金额不能为空")
+    @NotNull(message = "金额不能为空")
     private Double amount;
 
-    @NotEmpty(message = "标签不能为空")
+    @NotNull(message = "标签不能为空")
     private Integer label;
 
-    @NotEmpty(message = "类型不能为空")
+    @NotNull(message = "类型不能为空")
     private Integer type;
+
+    @NotEmpty(message = "时间不能为空")
+    private LocalDateTime date;
+
+    private String note;
 
     private String comment;
 

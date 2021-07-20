@@ -50,15 +50,14 @@ public class BlogController {
             SecurityUtils.getSubject().logout();
         }
 
+        Page<Blog> page = new Page<>(currentPage, 7);
         if (SecurityUtils.getSubject().isAuthenticated()) {
-            Page<Blog> page = new Page<>(currentPage, 7);
             if (Objects.requireNonNull(claims).getSubject().equals("1")) {
                 pageData = blogService.page(page, new QueryWrapper<Blog>().orderByDesc("created"));
             } else {
-                pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).or().eq("userId", Long.parseLong(claims.getSubject())));
+                pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0));
             }
         } else {
-            Page<Blog> page = new Page<>(currentPage, 7);
             pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).orderByDesc("created"));
         }
 
@@ -95,7 +94,6 @@ public class BlogController {
     @RequiresAuthentication
     @PostMapping("/blog/edit")
     public Result edit(@Validated @RequestBody Blog blog) {
-
         Blog temp = null;
 
         // 编辑状态
@@ -111,11 +109,10 @@ public class BlogController {
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setCreated(LocalDateTime.now());
             temp.setStatus(0);
-            temp.setType(1);
 
         }
 
-        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status", "type");
+        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status");
         blogService.saveOrUpdate(temp);
 
         return Result.success(null);
@@ -123,7 +120,15 @@ public class BlogController {
 
     @RequiresAuthentication
     @PostMapping("/blog/delete/{id}")
-    public Result delete(@PathVariable(name = "id") Long id) {
+    public Result delete(@PathVariable(name = "id") Long id, @RequestHeader String authorization) {
+        Claims claims = jwtUtils.getClaimByToken(authorization);
+        if (claims == null || jwtUtils.isTokenNotValid(claims)) {
+            return Result.fail("没有删除权限");
+        }
+
+        if (!claims.getSubject().equals("1")) {
+            return Result.fail("没有删除权限");
+        }
         Blog blog = blogService.getById(id);
         Assert.notNull(blog, "该博客不存在或已被删除");
 

@@ -85,8 +85,10 @@ export default {
 
     this.isLogon = false;
     if (this.$store.getters.getToken) {
-      this.$axios.post("/remember", {
-        token: this.$store.getters.getToken
+      this.$axios.post("/remember", {}, {
+        headers: {
+          "authorization": this.$store.getters.getToken
+        }
       }).then(
           res => {
             if (res.data.data === "Failed") {

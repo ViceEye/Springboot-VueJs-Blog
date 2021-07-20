@@ -36,5 +36,8 @@ public class LedgerLabel implements Serializable {
     @NotNull(message = "标签类型不能为空")
     private Integer type;
 
+    @NotNull(message = "Icon选择失效")
+    private String icon;
+
 
 }

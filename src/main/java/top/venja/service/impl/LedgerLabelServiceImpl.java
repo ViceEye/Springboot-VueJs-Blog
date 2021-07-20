@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Joka.Venja
- * @since 2021-07-13
+ * @since 2021-07-17
  */
 @Service
 public class LedgerLabelServiceImpl extends ServiceImpl<LedgerLabelMapper, LedgerLabel> implements LedgerLabelService {

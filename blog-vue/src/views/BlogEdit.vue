@@ -17,12 +17,18 @@
               placeholder="开始编辑..."
           />
         </el-form-item>
-        <el-form-item class="buttons">
-          <el-button :loading="sending" type="primary" @click="submitForm('ruleForm')">立即发表</el-button>
-          <el-button :loading="sending" @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
+        <el-col>
+          <el-switch
+              v-model="type"
+              active-text="私密"
+              inactive-text="公开">
+          </el-switch>
+          <el-form-item class="buttons">
+            <el-button :loading="sending" type="primary" @click="submitForm('ruleForm')">立即发表</el-button>
+            <el-button :loading="sending" @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </el-col>
       </el-form>
-
     </div>
 
     <Footer></Footer>
@@ -98,12 +104,15 @@
           new Preview(),
           new Fullscreen(),
         ],
+        type: true,
         // 编辑器的内容
         ruleForm: {
           id: '',
+          userId: '',
           title: '',
           description: '',
-          content: ''
+          content: '',
+          type: ''
         },
         rules: {
           title: [
@@ -128,7 +137,8 @@
 
             const _this = this;
 
-            //this.ruleForm.content = this.ruleForm.content.replace("<p data-f-id=\"pbf\" style=\"text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; font-family: sans-serif;\">Powered by <a href=\"https://www.froala.com/wysiwyg-editor?pb=1\" title=\"Froala Editor\">Froala Editor</a></p>", "");
+            this.ruleForm.userId = this.$store.getters.getUser.id;
+            this.ruleForm.type = this.type ? 1 : 0;
             _this.$axios.post('/blog/edit', this.ruleForm, {
               headers: {
                 "Authorization": _this.$store.getters.getToken
@@ -181,6 +191,12 @@
         _this.ruleForm.title = blog.title;
         _this.ruleForm.description = blog.description;
         _this.ruleForm.content = blog.content;
+        _this.ruleForm.type = 1;
+        _this.type = true;
+        if (blog.type === 0) {
+          _this.ruleForm.type = 0;
+          _this.type = false;
+        }
       }
     },
     created() {

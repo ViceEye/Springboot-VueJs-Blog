@@ -1,7 +1,7 @@
 package top.venja.mapper;
 
-import top.venja.entity.Ledger;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import top.venja.entity.Ledger;
 
 /**
  * <p>
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Joka.Venja
- * @since 2021-07-13
+ * @since 2021-07-17
  */
 public interface LedgerMapper extends BaseMapper<Ledger> {
 

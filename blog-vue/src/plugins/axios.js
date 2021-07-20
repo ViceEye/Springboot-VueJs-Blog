@@ -12,27 +12,34 @@ axios.interceptors.request.use(
         return config;
     }
 )
--
+
 //  后置拦截
 axios.interceptors.response.use(
     response => {
         let res = response.data;
         if (res.code === 200) {
             return response;
-        } else
-        if (res.code === 210) {
+        } else {
 
-            ElementUI.Message.error("Token过期, 重新登陆", {
-                duration: 3 * 1000
+            if (res.code === 410) {
+                location.reload();
+
+            } else if (res.code === 420) {
+                store.commit("REMOVE_INFO");
+                router.push("/login");
+            }
+
+            ElementUI.Message({
+                message: res.msg,
+                type: "error",
+                duration: 1000 * 3,
             });
-
-            location.reload();
-
-            return response;
+            return Promise.reject(response.data.msg)
         }
-        return response;
     },
     error => {
+        console.log("Axios Error")
+        console.log(error)
         if (error.response.data) {
             error.message = error.response.data.msg;
             if (router.currentRoute.name === "Register") {

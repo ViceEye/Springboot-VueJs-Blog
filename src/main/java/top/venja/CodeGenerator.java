@@ -59,7 +59,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(null);
-        pc.setParent("top.venja");
+        pc.setParent("top.venja.pack");
         mpg.setPackageInfo(pc);
 
         // 自定义配置

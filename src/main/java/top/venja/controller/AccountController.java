@@ -42,10 +42,9 @@ public class AccountController {
     @PostMapping("/login")
     public Result login(@Validated @RequestBody LoginDto loginDto, HttpServletResponse response) {
         User user = userService.getOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
-        Assert.notNull(user, "账号或密码错误");
 
-        if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))) {
-            return Result.fail("账号或密码错误");
+        if (user == null || !user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))) {
+            return Result.fail(Result.CODE.PASSWORD_FAIL, "账号或密码错误", null);
         }
 
         String passToken = CommonUtil.generateShortUUID();
@@ -69,11 +68,18 @@ public class AccountController {
         );
     }
 
+
+    @PostMapping("/getToken")
+    public Result debug(@Validated @RequestHeader String token) {
+        String jwt = jwtUtils.generateToken(1, token);
+        return Result.success(jwt);
+    }
+
     @PostMapping("/remember")
     public Result rememberMe(@Validated @RequestHeader String authorization) {
         Claims claims = jwtUtils.getClaimByToken(authorization);
         if (claims == null || jwtUtils.isTokenNotValid(claims)) {
-            return Result.fail(Result.CODE.LOGIN_TOKEN_FAIL,  "过期Token重新登陆", "Failed");
+            return Result.fail(Result.CODE.LOGIN_TOKEN_FAIL,  "过期或无效Token, 请重新登陆", "Failed");
         }
 
         User user = userService.getOne(new QueryWrapper<User>().eq("id",claims.getSubject()));

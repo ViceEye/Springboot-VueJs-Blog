@@ -55,9 +55,9 @@ export default {
     };
     return {
       registerForm: {
-        username: 'Joka.Venja',
-        password: '111111',
-        repeatPassword: '111111',
+        username: '',
+        password: '',
+        repeatPassword: '',
       },
       rules: {
         username: [

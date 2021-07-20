@@ -35,3 +35,4 @@ blog-vue/node_modules/
 src/main/resources/
 src/test/
 /src/main/resources/application-default.yml
+/dump.rdb

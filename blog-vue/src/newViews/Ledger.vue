@@ -36,7 +36,7 @@
         </div>
       </el-card>
 
-      <router-link class="ledger-add-button" to="/ledger">
+      <router-link class="ledger-add-button" to="/ledger/add">
         <el-button round type="danger">记一笔</el-button>
       </router-link>
 
