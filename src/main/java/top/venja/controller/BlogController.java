@@ -55,7 +55,7 @@ public class BlogController {
             if (Objects.requireNonNull(claims).getSubject().equals("1")) {
                 pageData = blogService.page(page, new QueryWrapper<Blog>().orderByDesc("created"));
             } else {
-                pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0));
+                pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).or().eq("user_id", Long.parseLong(claims.getSubject())));
             }
         } else {
             pageData = blogService.page(page, new QueryWrapper<Blog>().eq("type", 0).orderByDesc("created"));
@@ -82,7 +82,7 @@ public class BlogController {
             if (claims == null || jwtUtils.isTokenNotValid(claims)) {
                 return Result.success(falseBlog);
             } else {
-                if (!claims.getSubject().equals("1") || Long.parseLong(claims.getSubject()) != blog.getUserId()) {
+                if (!claims.getSubject().equals("1") && Long.parseLong(claims.getSubject()) != blog.getUserId()) {
                     return Result.success(falseBlog);
                 }
             }
